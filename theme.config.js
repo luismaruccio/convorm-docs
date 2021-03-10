@@ -46,6 +46,6 @@ export default {
   footerText: <>MIT {new Date().getFullYear()} © ConvORM.</>,
   i18n: [
     { locale: 'en-US', text: 'English' },
-    { locale: 'pt-br', text: 'Português Brasileiro' }
+    { locale: 'pt-BR', text: 'Português Brasileiro' }
   ]
 }
