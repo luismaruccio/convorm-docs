@@ -1,78 +1,119 @@
-# Get Started
+# 🧭 Firsts Steps
 
-Create your own Nextra site and deploy to Vercel:
+Before you start, you will need to install it on your project:
 
-[![](https://vercel.com/button)](https://vercel.com/import/git?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra&c=1)
-
-Vercel will create the Nextra repository and deploy the site for you with just a few clicks.  
-Once done, every change in the repository will be deployed automatically.
-
----
-
-### Configurations
-
-1. Install Next.js and React: `yarn add next react react-dom`
-
-2. Install Nextra and the docs theme: `yarn add nextra nextra-theme-docs`
-
-3. Create the following Next.js config and theme config under the root directory:
-
-```jsx
-// next.config.js
-const withNextra = require('nextra')('nextra-theme-docs', './theme.config.js')
-module.exports = withNextra()
+Using dotnet cli
+```bash
+$ dotnet add package Conv.ORM
 ```
 
-```jsx
-// theme.config.js
-export default {
-  repository: 'https://github.com/shuding/nextra', // project repo
-  docsRepository: 'https://github.com/shuding/nextra', // docs repo
-  branch: 'master', // branch of docs
-  path: '/', // path of docs
-  titleSuffix: ' – Nextra',
-  nextLinks: true,
-  prevLinks: true,
-  search: true,
-  customSearch: null, // customizable, you can use algolia for example
-  darkMode: true,
-  footer: true,
-  footerText: 'MIT 2020 © Shu Ding.',
-  footerEditOnGitHubLink: true, // will link to the docs repo
-  logo: <>
-    <svg>...</svg>
-    <span>Next.js Static Site Generator</span>
-  </>,
-  head: <>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Nextra: the next docs builder" />
-    <meta name="og:title" content="Nextra: the next docs builder" />
-  </>
+Using Nuget Package Manager
+```bash
+PM> Install-Package Conv.ORM
+```
+
+### ⬇ Implements in your app
+1. Create a connection:
+  - Using connection file:
+```csharp
+Connection connection = ConnectionFactory.GetConnection();
+```
+  - Using specified parameters
+```csharp
+ConnectionParameters connectionParameters = new ConnectionParameters("Default", EConnectionDriverTypes.ecdtMySql, "127.0.0.1", "3306", "databaseTest", "root", "123456");
+Connection connection = ConnectionFactory.GetConnection(connectionParameters);
+```
+2. Create a entity
+```cs
+[EntitiesAttributes(TableName = "User")]
+public class UserEntity : Entity
+{
+     [EntitiesColumnAttributes(
+         Primary = true,
+         Default = "0"
+     )]
+     public int UserId;
+     public string Name;
+     public string Login;
+     public string Password;
+     [EntitiesColumnAttributes(Default = "true")]
+     public bool Active;
+}
+```     
+3. Create a manipulations methods
+  - Save
+```cs
+public UserEntity Save()
+{
+    var userRepository = new Repository();
+    try
+    {
+        if (UserId != 0)
+            return (UserEntity)userRepository.Update(this);
+        else
+            return (UserEntity)userRepository.Insert(this);
+    }
+    catch(Exception ex)
+    {
+        Console.Write(ex.Message);
+        throw;
+     }
 }
 ```
-
-4. Create `pages/_app.js` and include the theme stylesheet:
-
-```jsx
-import 'nextra-theme-docs/style.css'
-
-export default function Nextra({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  - Find All
+```cs
+public IList FindAll()
+{
+    var userRepository = new Repository();
+    try
+    {
+        return userRepository.FindAll(this);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
+}
+``` 
+  - Find by conditions
+```cs
+public IList Find(QueryConditionsBuilder conditionsBuilder)
+{
+    var userRepository = new Repository();
+    try
+    {
+        return userRepository.Find(this, conditionsBuilder);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
+}
+``` 
+  - Find by id
+```cs
+public UserEntity Find(int id)
+{
+    var userRepository = new Repository();
+    try
+    {
+        return (UserEntity)userRepository.Find(this, new int[] {id});
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
 }
 ```
+4. Searching
+  - For conditions to find registers, you can create a ConditionBuilder:
+```cs
+var queryConditions = new QueryConditionsBuilder();
+queryConditions.AddQueryCondition("name", EConditionTypes.Like, new object[] {"%" + txtTextToSearch.Text + "%"});
+queryConditions.AddQueryCondition("active", EConditionTypes.Equals, new object[] { rbOnlyActives.Checked ? 1 : 0 });
 
-5. You are good to go! 
-
----
-
-import Callout from 'nextra-theme-docs/callout'
-
-<Callout>
-Any `.md` or `.mdx` file will turn into a doc page and be displayed in sidebar. You can also create a `meta.json` file to customize the page order and title.
-
-Check the source code: https://github.com/shuding/nextra for more information.
-</Callout>
-
-<Callout>
-You can also use [`<style jsx>`](https://nextjs.org/docs/basic-features/built-in-css-support#css-in-js) to style elements inside `theme.config.js`.
-</Callout>
+dgvRegisters.DataSource = ConvORMHelper.ConvertListToDataTable(userEntity.Find(queryConditions));
+```  
