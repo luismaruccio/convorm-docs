@@ -30,15 +30,15 @@
     ⚠ Still in Development 🚧⚙🔧🖥
 </h4>
 
-## 💻 About the project
+### 💻 About the project
 Conv.ORM is a simple ORM, designed to remove the need for a developer to deal with SQL commands, thus speeding up the development process and facilitating maintenance.
 
-### 🚧 It works?
+#### 🚧 It works?
 Yes, but not quite. Currently the following features are functional:
 * MySql/MariaDB and MSSQL connection;
 * Insert, Update and Search entities for DB mentioned above;
 
-### 🛤 RoadMap
+#### 🛤 RoadMap
 The full roadmap can be found in full [here](https://github.com/ConvORM/Conv.ORM.NET5/projects/1)
 - [ ] Delete entities;
 - [ ] Inactivation entities;
