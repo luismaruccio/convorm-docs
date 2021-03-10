@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
     "start": "next start",
     "build": "next build"
   },
   "author": "Shu Ding",
   "license": "MIT",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "next": "^10.0.8-canary.9",
-    "nextra": "^0.4.1",
-    "nextra-theme-docs": "^1.1.2",
+    "nextra": "^0.4.3",
+    "nextra-theme-docs": "^1.1.4",
     "prism-react-renderer": "^1.2.0",
     "prismjs": "^1.23.0",
     "react": "^17.0.1",
